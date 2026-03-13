@@ -53,3 +53,14 @@ def login_db(cur, name, age):
         (name, age)
     )
     return cur.fetchone()
+
+def update_user_db(cur, age: int, is_admin: bool, name):
+    cur.execute(
+        "UPDATE users SET age = %s, is_admin = %s WHERE name = %s",
+        (age, is_admin, name)
+    )
+
+def get_all_users_db(cur):
+    cur.execute("SELECT id, name, age, is_admin FROM users")
+    return cur.fetchall()
+
