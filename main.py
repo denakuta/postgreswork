@@ -16,7 +16,17 @@ def admin_menu():
 
 def add_user():
     name = str(input('user -> '))
-    age = int(input('age -> '))
+    
+    while True:
+        try:
+            age = int(input('age -> '))
+            if age <= 0:
+                print('возраст должен быть больше 0')
+                continue
+            break
+        except ValueError:
+            print('возраст должен быть числом')
+    
     is_admin = cli.ask_yes_no('admin?')
 
     try:
@@ -30,10 +40,33 @@ def add_user():
 
 def delete_user():
     column = input('по какому столбцу удалить? (id/name/age) -> ')
+    
+    if column not in ['id', 'name', 'age']:
+        print('неправильный столбец')
+        return
+    
     value = input('значение -> ')
+    
+    if column == 'id' or column == 'age':
+        while True:
+            try:
+                value = int(value)
+                if value <= 0:
+                    print('значение должно быть больше 0')
+                    value = input('значение -> ')
+                    continue
+                break
+            except ValueError:
+                print('значение должно быть числом')
+                value = input('значение -> ')
 
-    db.delete_user_db(cur, column, value)
-    print('deleted')
+    try:
+        db.delete_user_db(cur, column, value)
+        print('deleted')
+    except Exception as e:
+        print(f'ошибка: {e}')
+        conn.rollback()
+        return
 
     conn.commit()
 
@@ -78,7 +111,17 @@ def user_menu(user):
 
 def login():
     name = input('name -> ')
-    age = int(input('age -> '))
+    
+    while True:
+        try:
+            age = int(input('age -> '))
+            if age <= 0:
+                print('возраст должен быть больше 0')
+                continue
+            break
+        except ValueError:
+            print('возраст должен быть числом')
+    
     user = db.login_db(cur, name, age)
 
     if user:
@@ -89,7 +132,17 @@ def login():
 
 def update_user():
     name = input('name who u want to edit -> ')
-    age = int(input('new age ->'))
+    
+    while True:
+        try:
+            age = int(input('new age -> '))
+            if age <= 0:
+                print('возраст должен быть больше 0')
+                continue
+            break
+        except ValueError:
+            print('возраст должен быть числом')
+    
     is_admin = cli.ask_yes_no('admin?')
     db.update_user_db(cur, age, is_admin, name)
     print('user updated')
